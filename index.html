@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/a2a418808a.js" crossorigin="anonymous"></script>
+    <title>Weather</title>
+</head>
+
+<body>
+    <div class="weather">
+        <div class="weather-container">
+            <div class="weather-details">
+                <h1 id="temp">16</h1>
+                <div class="weather-info">
+                    <h3 id="city">London</h3>
+                    <div class="date-container">
+                        <div class="time" id="time">
+                            12:30 <span id="am-pm">PM</span>
+                        </div>
+                        <div class="date" id="date">
+                            Monday, 25 May
+                        </div>
+                    </div>
+                    <div class="icon-info">
+                        <div id="icon"></div>
+                        <p id="description">Cloudy</p>
+                    </div>
+                </div>
+
+            </div> 
+        </div>
+        
+        <div class="city-container">
+            <form id="location-search">
+                <input type="text" placeholder="Another location" class="search">
+                <button class="submit" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            <ul class="city-name">
+                <li class="city">Accra</li>
+                <li class="city">Johannesburg</li>
+                <li class="city">Nairobi</li>
+                <li class="city">Cairo</li>
+            </ul>
+
+            <div class="city-info">
+                <h2>Weather Details</h2>
+                <div class="info-container">
+                    <div class="info">
+                        <p>Cloudy</p>
+                        <p id="cloud">86%</p>
+                    </div>
+                    <div class="info">
+                        <p>Humidity</p>
+                        <p id="humidity">62%</p>
+                    </div>
+                    <div class="info">
+                        <p>Wind</p>
+                        <p id="wind">8km/h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+
+</html>
