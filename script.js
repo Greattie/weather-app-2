@@ -12,10 +12,6 @@ const form = document.getElementById("location-search");
 const search = document.querySelector(".search");
 const btn = document.querySelector(".submit");
 
-console.log(search);
-
-let cityInput = "Lagos";
-
 function getWeather() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -35,23 +31,44 @@ function getWeather() {
 
   function showWeather(data) {
     const { temp } = data.main;
-    const place = data.name;
     const { name } = data;
     const { all } = data.clouds;
     const { humidity } = data.main;
     const { speed } = data.wind;
     const { description, icon } = data.weather[0];
+    // console.log(name);
 
     cloudEl.innerText = all + "%";
     windEl.innerText = speed + "km/hr";
     tempEl.innerText = temp + "℃";
     humidityEl.innerText = humidity + "%";
-    iconEl.innerHTML.src = "https://openweathermap.org/img/wn/" + icon + ".png";
+    iconEl.src = "https://openweathermap.org/img/wn/" + icon + ".png";
     descEl.innerText = description;
-    cityEl.innerText = name;
   }
 }
 
+function getCity() {
+  let city_name = "Lagos";
+  let cityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api}`;
+  fetch(cityUrl)
+    .then((resp) => resp.json())
+    .then((cityData) => {
+      console.log(cityData);
+      showCity(getCity);
+    });
+
+  function showCity(cityData) {
+    const { place } = name;
+    console.log(place);
+    // if (city_name === place) {
+    //   cityEl.innerText = place;
+    // } else {
+    //   // getWeather(getCity());
+    // }
+  }
+}
+
+getCity();
 getWeather();
 
 form.addEventListener("submit", (e) => {
@@ -108,43 +125,3 @@ setInterval(() => {
 
   dateEl.innerHTML = days[day] + ", " + date + " " + months[month];
 }, 1000);
-
-// getWeatherData();
-// function getWeatherData() {
-//   navigator.geolocation.getCurrentPosition((position) => {
-//     let { latitude, longitude } = positiom.coords;
-
-//     fetch(
-//       `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`
-//     )
-//       .then((res) => res.json())
-//       .then((data) => {
-//         console.log(data);
-//         showWeatherData(data);
-//       });
-//   });
-// }
-
-// currentWeatherItemsEl.innerHTML = `<div class="weather-item">
-// <div>Humidity</div>
-// <div>${humidity}%</div>
-// </div>
-// <div class="weather-item">
-// <div>Pressure</div>
-// <div>${pressure}</div>
-// </div>
-// <div class="weather-item">
-// <div>Wind Speed</div>
-// <div>${wind_speed}</div>
-// </div>
-
-// <div class="weather-item">
-// <div>Sunrise</div>
-// <div>${window.moment(sunrise * 1000).format("HH:mm a")}</div>
-// </div>
-// <div class="weather-item">
-// <div>Sunset</div>
-// <div>${window.moment(sunset * 1000).format("HH:mm a")}</div>
-// </div>
-
-// `;
