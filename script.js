@@ -11,6 +11,7 @@ const tempEl = document.getElementById("temp");
 const form = document.getElementById("location-search");
 const search = document.querySelector(".search");
 const btn = document.querySelector(".submit");
+const cities = document.querySelectorAll(".city");
 
 function getWeather() {
   if (navigator.geolocation) {
@@ -31,12 +32,10 @@ function getWeather() {
 
   function showWeather(data) {
     const { temp } = data.main;
-    const { name } = data;
     const { all } = data.clouds;
     const { humidity } = data.main;
     const { speed } = data.wind;
     const { description, icon } = data.weather[0];
-    // console.log(name);
 
     cloudEl.innerText = all + "%";
     windEl.innerText = speed + "km/hr";
@@ -44,31 +43,41 @@ function getWeather() {
     humidityEl.innerText = humidity + "%";
     iconEl.src = "https://openweathermap.org/img/wn/" + icon + ".png";
     descEl.innerText = description;
-  }
-}
 
-function getCity() {
-  let city_name = "Lagos";
-  let cityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api}`;
-  fetch(cityUrl)
-    .then((resp) => resp.json())
-    .then((cityData) => {
-      console.log(cityData);
-      showCity(getCity);
+    function getCity() {
+      let city_name = "Lagos";
+      let cityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api}`;
+      fetch(cityUrl)
+        .then((resp) => resp.json())
+        .then((data) => {
+          console.log(data);
+          showCity(data);
+        });
+
+      function showCity(data) {
+        const { place } = data.name;
+        console.log(place);
+        // if (city_name === place) {
+        //   cityEl.innerText = place;
+        // }
+        //else {
+        //   // getWeather(getCity());
+        // }
+      }
+    }
+    getCity();
+
+    let cityInput = "Lagos";
+    cities.forEach((city) => {
+      city.addEventListener("click", (e) => {
+        cityInput = e.target.innerHTML;
+        console.log(cityInput);
+        showWeather();
+      });
     });
-
-  function showCity(cityData) {
-    const { place } = name;
-    console.log(place);
-    // if (city_name === place) {
-    //   cityEl.innerText = place;
-    // } else {
-    //   // getWeather(getCity());
-    // }
   }
 }
 
-getCity();
 getWeather();
 
 form.addEventListener("submit", (e) => {
