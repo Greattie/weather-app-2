@@ -23,73 +23,49 @@ function getWeather() {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
-          showWeather(data);
+          const { temp } = data.main;
+          const { all } = data.clouds;
+          const { humidity } = data.main;
+          const { speed } = data.wind;
+          const { description, icon } = data.weather[0];
+
+          cloudEl.innerText = all + "%";
+          windEl.innerText = speed + "km/hr";
+          tempEl.innerText = temp + "℃";
+          humidityEl.innerText = humidity + "%";
+          iconEl.src = "https://openweathermap.org/img/wn/" + icon + ".png";
+          descEl.innerText = description;
+          //showWeather(data);
         });
     });
   } else {
     alert("Unable to get your location");
   }
-
-  function showWeather(data) {
-    const { temp } = data.main;
-    const { all } = data.clouds;
-    const { humidity } = data.main;
-    const { speed } = data.wind;
-    const { description, icon } = data.weather[0];
-
-    cloudEl.innerText = all + "%";
-    windEl.innerText = speed + "km/hr";
-    tempEl.innerText = temp + "℃";
-    humidityEl.innerText = humidity + "%";
-    iconEl.src = "https://openweathermap.org/img/wn/" + icon + ".png";
-    descEl.innerText = description;
-
-    function getCity() {
-      let city_name = "Lagos";
-      let cityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api}`;
-      fetch(cityUrl)
-        .then((resp) => resp.json())
-        .then((data) => {
-          console.log(data);
-          showCity(data);
-        });
-
-      function showCity(data) {
-        const { place } = data.name;
-        console.log(place);
-        // if (city_name === place) {
-        //   cityEl.innerText = place;
-        // }
-        //else {
-        //   // getWeather(getCity());
-        // }
-      }
-    }
-    getCity();
-
-    let cityInput = "Lagos";
-    cities.forEach((city) => {
-      city.addEventListener("click", (e) => {
-        cityInput = e.target.innerHTML;
-        console.log(cityInput);
-        showWeather();
-      });
-    });
-  }
 }
 
+//console.log()
 getWeather();
 
-form.addEventListener("submit", (e) => {
-  if (search.value.length == 0) {
-    alert("Please type in a city name");
-  } else {
-    cityEl.innerText = search.value;
-    getWeather();
-    search.value = "";
-  }
-  e.preventDefault();
-});
+function getCity() {
+  navigator.geolocation.getCurrentPosition((position) => {
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+    let cityUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${api}`;
+    fetch(cityUrl)
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        const place = data[0].name;
+        //const { name } = data;
+        console.log(place);
+        //console.log(name)
+        cityEl.innerText = place;
+        // showCity(data);
+      });
+  });
+}
+
+getCity();
 
 const days = [
   "Sunday",
@@ -134,3 +110,49 @@ setInterval(() => {
 
   dateEl.innerHTML = days[day] + ", " + date + " " + months[month];
 }, 1000);
+
+form.addEventListener("submit", (e) => {
+  if (search.value.length == 0) {
+    alert("Please type in a city name");
+  } else {
+    cityEl.innerText = search.value;
+    getCityByName(search.value);
+    // search.value = "";
+  }
+  e.preventDefault();
+});
+
+let cityInput = "Lagos";
+
+cities.forEach((city) => {
+  city.addEventListener("click", (e) => {
+    cityInput = e.target.innerHTML;
+    cityEl.innerText = cityInput;
+    getCityByName(cityInput);
+    console.log(cityInput);
+  });
+});
+
+async function getCityByName(city_name) {
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&units=metric&appid=${api}`
+    );
+    const data = await res.json();
+    console.log(data);
+    const { temp } = data.main;
+    const { all } = data.clouds;
+    const { humidity } = data.main;
+    const { speed } = data.wind;
+    const { description, icon } = data.weather[0];
+
+    cloudEl.innerText = all + "%";
+    windEl.innerText = speed + "km/hr";
+    tempEl.innerText = temp + "℃";
+    humidityEl.innerText = humidity + "%";
+    iconEl.src = "https://openweathermap.org/img/wn/" + icon + ".png";
+    descEl.innerText = description;
+  } catch (error) {
+    alert("An error has occured", error);
+  }
+}
